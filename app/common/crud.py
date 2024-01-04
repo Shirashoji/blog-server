@@ -36,10 +36,6 @@ def get_blog_by_id(db: Session, blog_id: int):
     return db.query(models.Blog).filter(models.Blog.id == blog_id).first()
 
 
-def get_blogs_by_owner(db: Session, owner_id: int):
-    return db.query(models.Blog).filter(models.Blog.owner_id == owner_id).all()
-
-
 def create_blog(db: Session, owner_id: int, blog: schemas.BlogCreate):
     db_blog = models.Blog(**blog.dict(), owner_id=owner_id)
     db_blog.created_at = datetime.datetime.now()

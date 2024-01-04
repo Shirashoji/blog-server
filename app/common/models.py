@@ -30,27 +30,3 @@ class Blog(Base):
     updated_at = Column(DateTime, nullable=False)
 
     owner = relationship("User", back_populates="blogs")
-
-
-class Comments(Base):
-    __tablename__ = "comments"
-
-    user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
-    blog_id = Column(Integer, ForeignKey("blogs.id"), primary_key=True)
-    content = Column(String, index=True)
-    created_at = Column(DateTime, nullable=False)
-    updated_at = Column(DateTime, nullable=False)
-
-    user = relationship("User", back_populates="comments")
-    blog = relationship("Blog", back_populates="comments")
-
-
-class Favorite(Base):
-    __tablename__ = "favorites"
-
-    user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
-    blog_id = Column(Integer, ForeignKey("blogs.id"), primary_key=True)
-    timestamp = Column(DateTime, nullable=False)
-
-    user = relationship("User", back_populates="favorites")
-    blog = relationship("Blog", back_populates="favorites")

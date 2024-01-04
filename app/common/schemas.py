@@ -22,41 +22,6 @@ class Blog(BlogBase):
         orm_mode = True
 
 
-class CommentBase(BaseModel):
-    content: str
-
-
-class CommentCreate(CommentBase):
-    pass
-
-
-class Comment(CommentBase):
-    user_id: int
-    blog_id: int
-    created_at: datetime | None = None
-    updated_at: datetime | None = None
-
-    class Config:
-        orm_mode = True
-
-
-class FavoriteBase(BaseModel):
-    pass
-
-
-class AddFavorite(FavoriteBase):
-    blog_id: int
-
-
-class Favorite(FavoriteBase):
-    user_id: int
-    blog_id: int
-    timestamp: datetime | None = None
-
-    class Config:
-        orm_mode = True
-
-
 class UserBase(BaseModel):
     username: str
 

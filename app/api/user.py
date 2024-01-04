@@ -37,12 +37,6 @@ def read_user(username: str, db: Session = Depends(get_db)):
     return db_user
 
 
-@router.post("/users/{username}/blogs/", response_model=schemas.Blog)
-def read_blogs(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    blogs = crud.get_blogs(db, skip=skip, limit=limit)
-    return blogs
-
-
 @router.get("/users/me/", response_model=schemas.User, tags=["users"])
 async def read_users_me(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     current_user = await get_current_user(token, db)
