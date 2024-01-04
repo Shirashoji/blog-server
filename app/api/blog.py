@@ -36,3 +36,17 @@ def read_blog(id: int, db: Session = Depends(get_db)):
     if db_blog is None:
         raise HTTPException(status_code=404, detail="Blog not found")
     return db_blog
+
+
+@router.put("/blog/{id}", response_model=schemas.Blog, tags=["blogs"])
+async def update_blog(id: int, blog: schemas.BlogCreate, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    user = await auth.get_current_user(token, db)
+    db_blog = crud.get_blog_by_id(db, blog_id=id)
+    if db_blog is None:
+        raise HTTPException(status_code=404, detail="Blog not found")
+    if db_blog.owner_id != user.id:
+        raise HTTPException(
+            status_code=405, detail="Not allowed! you are not the owner of this blog")
+
+    db_blog = crud.update_blog(db, blog_id=id, blog=blog)
+    return db_blog

@@ -1,3 +1,4 @@
+import datetime
 from sqlalchemy.orm import Session
 from common.security import get_password_hash
 
@@ -20,6 +21,7 @@ def create_user(db: Session, user: schemas.UserCreate):
     hashed = get_password_hash(user.password)
     db_user = models.User(
         username=user.username, hashed_password=hashed)
+    db_user.joined_at = datetime.datetime.now()
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -40,7 +42,20 @@ def get_blogs_by_owner(db: Session, owner_id: int):
 
 def create_blog(db: Session, owner_id: int, blog: schemas.BlogCreate):
     db_blog = models.Blog(**blog.dict(), owner_id=owner_id)
+    db_blog.created_at = datetime.datetime.now()
+    db_blog.updated_at = datetime.datetime.now()
     db.add(db_blog)
+    db.commit()
+    db.refresh(db_blog)
+    return db_blog
+
+
+def update_blog(db: Session, blog_id: int, blog: schemas.BlogCreate):
+    db_blog = db.query(models.Blog).filter(models.Blog.id == blog_id).first()
+    db_blog.title = blog.title
+    db_blog.description = blog.description
+    db_blog.content = blog.content
+    db_blog.updated_at = datetime.datetime.now()
     db.commit()
     db.refresh(db_blog)
     return db_blog

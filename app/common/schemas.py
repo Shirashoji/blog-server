@@ -1,3 +1,4 @@
+from datetime import datetime
 from pydantic import BaseModel
 
 
@@ -14,6 +15,43 @@ class BlogCreate(BlogBase):
 class Blog(BlogBase):
     id: int
     owner_id: int
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
+
+    class Config:
+        orm_mode = True
+
+
+class CommentBase(BaseModel):
+    content: str
+
+
+class CommentCreate(CommentBase):
+    pass
+
+
+class Comment(CommentBase):
+    user_id: int
+    blog_id: int
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
+
+    class Config:
+        orm_mode = True
+
+
+class FavoriteBase(BaseModel):
+    pass
+
+
+class AddFavorite(FavoriteBase):
+    blog_id: int
+
+
+class Favorite(FavoriteBase):
+    user_id: int
+    blog_id: int
+    timestamp: datetime | None = None
 
     class Config:
         orm_mode = True
@@ -30,6 +68,7 @@ class UserCreate(UserBase):
 class User(UserBase):
     id: int
     username: str
+    joined_at: datetime | None = None
     blogs: list[Blog] = []
 
     class Config:
