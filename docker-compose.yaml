@@ -1,0 +1,30 @@
+version: "2"
+services:
+  app:
+    container_name: blog-app
+    build: .
+    ports:
+      - "80:80"
+      - "8080:8080"
+    depends_on:
+      - postgres
+    restart: always
+    volumes:
+      - ./app:/code/app
+    environment:
+      TZ: "Asia/Tokyo"
+  postgres:
+    container_name: blog-db
+    image: postgres:12.11
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: blog
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
