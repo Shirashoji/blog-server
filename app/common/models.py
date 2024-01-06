@@ -14,6 +14,7 @@ class User(Base):
     joined_at = Column(DateTime, nullable=False)
 
     blogs = relationship("Blog", back_populates="owner")
+    comments = relationship("Comment", back_populates="user")
 
 
 class Blog(Base):
@@ -30,3 +31,20 @@ class Blog(Base):
     updated_at = Column(DateTime, nullable=False)
 
     owner = relationship("User", back_populates="blogs")
+    comments = relationship("Comment", back_populates="blog")
+
+
+class Comment(Base):
+    __tablename__ = "comments"
+
+    id = Column(Integer, primary_key=True, index=True)
+    content = Column(String, index=True)
+
+    blog_id = Column(Integer, ForeignKey("blogs.id"))
+    user_id = Column(Integer, ForeignKey("users.id"))
+
+    created_at = Column(DateTime, nullable=False)
+    updated_at = Column(DateTime, nullable=False)
+
+    blog = relationship("Blog", back_populates="comments")
+    user = relationship("User", back_populates="comments")

@@ -6,7 +6,6 @@ from sqlalchemy.orm import Session
 from api.auth import get_current_user
 from api.dps import get_db
 
-from common.schemas import User
 from common import schemas, crud
 
 router = APIRouter()

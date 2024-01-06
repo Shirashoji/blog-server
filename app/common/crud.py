@@ -55,3 +55,51 @@ def update_blog(db: Session, blog_id: int, blog: schemas.BlogCreate):
     db.commit()
     db.refresh(db_blog)
     return db_blog
+
+
+def delete_blog(db: Session, blog_id: int):
+    db_blog = db.query(models.Blog).filter(models.Blog.id == blog_id).first()
+    db.delete(db_blog)
+    db.commit()
+    return db_blog
+
+
+def get_comments(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Comment).offset(skip).limit(limit).all()
+
+
+def get_comment_by_id(db: Session, comment_id: int):
+    return db.query(models.Comment).filter(models.Comment.id == comment_id).first()
+
+
+def get_comments_by_blog_id(db: Session, blog_id: int):
+    return db.query(models.Comment).filter(models.Comment.blog_id == blog_id).all()
+
+
+def create_comment(db: Session, blog_id: int, user_id: int, comment: schemas.CommentCreate):
+    db_comment = models.Comment(
+        **comment.dict(), blog_id=blog_id, user_id=user_id)
+    db_comment.created_at = datetime.datetime.now()
+    db_comment.updated_at = datetime.datetime.now()
+    db.add(db_comment)
+    db.commit()
+    db.refresh(db_comment)
+    return db_comment
+
+
+def update_comment(db: Session, comment_id: int, comment: schemas.CommentCreate):
+    db_comment = db.query(models.Comment).filter(
+        models.Comment.id == comment_id).first()
+    db_comment.content = comment.content
+    db_comment.updated_at = datetime.datetime.now()
+    db.commit()
+    db.refresh(db_comment)
+    return db_comment
+
+
+def delete_comment(db: Session, comment_id: int):
+    db_comment = db.query(models.Comment).filter(
+        models.Comment.id == comment_id).first()
+    db.delete(db_comment)
+    db.commit()
+    return db_comment
