@@ -30,7 +30,9 @@ class Blog(Base):
     created_at = Column(DateTime, nullable=False)
     updated_at = Column(DateTime, nullable=False)
 
+    owner = relationship("User", back_populates="blogs")
     comments = relationship("Comment", back_populates="blog")
+    blog_categories = relationship("BlogCategory", back_populates="blog")
 
 
 class Comment(Base):
