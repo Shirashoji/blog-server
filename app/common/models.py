@@ -48,3 +48,31 @@ class Comment(Base):
 
     blog = relationship("Blog", back_populates="comments")
     user = relationship("User", back_populates="comments")
+
+
+class Category(Base):
+    __tablename__ = "categories"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
+
+    blog_categories = relationship("BlogCategory", back_populates="category")
+
+
+class BlogCategory(Base):
+    __tablename__ = "blog_categories"
+
+    blog_id = Column(Integer,
+                     ForeignKey("blogs.id"),
+                     primary_key=True,
+                     index=True
+                     )
+
+    category_id = Column(Integer,
+                         ForeignKey("categories.id"),
+                         primary_key=True,
+                         index=True
+                         )
+
+    blog = relationship("Blog", back_populates="blog_categories")
+    category = relationship("Category", back_populates="blog_categories")
