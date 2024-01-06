@@ -30,7 +30,6 @@ class Blog(Base):
     created_at = Column(DateTime, nullable=False)
     updated_at = Column(DateTime, nullable=False)
 
-    owner = relationship("User", back_populates="blogs")
     comments = relationship("Comment", back_populates="blog")
 
 
@@ -45,9 +44,6 @@ class Comment(Base):
 
     created_at = Column(DateTime, nullable=False)
     updated_at = Column(DateTime, nullable=False)
-
-    blog = relationship("Blog", back_populates="comments")
-    user = relationship("User", back_populates="comments")
 
 
 class Category(Base):
@@ -73,6 +69,3 @@ class BlogCategory(Base):
                          primary_key=True,
                          index=True
                          )
-
-    blog = relationship("Blog", back_populates="blog_categories")
-    category = relationship("Category", back_populates="blog_categories")
