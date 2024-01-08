@@ -14,7 +14,7 @@ router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-@router.post("/blog/", response_model=schemas.Blog, tags=["blog"])
+@router.post("/blog/", response_model=schemas.Blog, tags=["blog"], description="Create a new blog")
 async def create_blog(
     blog: schemas.BlogCreate, db: Session = Depends(get_db),
     token: str = Depends(oauth2_scheme)
@@ -24,13 +24,13 @@ async def create_blog(
     return crud.create_blog(db=db, blog=blog, owner_id=user.id)
 
 
-@router.get("/blog/", response_model=list[schemas.Blog], tags=["blog"])
+@router.get("/blog/", response_model=list[schemas.BlogSummary], tags=["blog"], description="Returns a list of blog summaries.")
 def read_blogs(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     blogs = crud.get_blogs(db, skip=skip, limit=limit)
     return blogs
 
 
-@router.get("/blog/{id}", response_model=schemas.Blog, tags=["blog"])
+@router.get("/blog/{id}", response_model=schemas.Blog, tags=["blog"], description="Returns a blog.")
 def read_blog(id: int, db: Session = Depends(get_db)):
     db_blog = crud.get_blog_by_id(db, blog_id=id)
     if db_blog is None:
@@ -38,7 +38,7 @@ def read_blog(id: int, db: Session = Depends(get_db)):
     return db_blog
 
 
-@router.put("/blog/{id}", response_model=schemas.Blog, tags=["blog"])
+@router.put("/blog/{id}", response_model=schemas.Blog, tags=["blog"], description="Updates a blog.")
 async def update_blog(id: int, blog: schemas.BlogCreate, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     user = await auth.get_current_user(token, db)
     db_blog = crud.get_blog_by_id(db, blog_id=id)
@@ -52,7 +52,7 @@ async def update_blog(id: int, blog: schemas.BlogCreate, token: str = Depends(oa
     return db_blog
 
 
-@router.delete("/blog/{id}", response_model=schemas.Blog, tags=["blog"])
+@router.delete("/blog/{id}", response_model=schemas.Blog, tags=["blog"], description="Deletes a blog.")
 async def delete_blog(id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     user = await auth.get_current_user(token, db)
     db_blog = crud.get_blog_by_id(db, blog_id=id)
