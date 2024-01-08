@@ -19,7 +19,7 @@ load_dotenv(verbose=True)
 dotenv_path = join(dirname(__file__), '../.env')
 load_dotenv(dotenv_path)
 
-PASSWORD_SECRET_KEY = os.environ.get("SECRET_KEY")
+PASSWORD_SECRET_KEY = os.environ.get("PASSWORD_SECRET_KEY")
 HASH_ALGORITHM = os.environ.get("HASH_ALGORITHM")
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
