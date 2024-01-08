@@ -22,8 +22,8 @@ class Blog(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
-    description = Column(String, index=True)
-    content = Column(String, index=True)
+    description = Column(String)
+    content = Column(String)
 
     owner_id = Column(Integer, ForeignKey("users.id"))
 
@@ -39,7 +39,7 @@ class Comment(Base):
     __tablename__ = "comments"
 
     id = Column(Integer, primary_key=True, index=True)
-    content = Column(String, index=True)
+    content = Column(String)
 
     blog_id = Column(Integer, ForeignKey("blogs.id"))
     user_id = Column(Integer, ForeignKey("users.id"))
