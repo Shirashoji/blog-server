@@ -103,3 +103,48 @@ def delete_comment(db: Session, comment_id: int):
     db.delete(db_comment)
     db.commit()
     return db_comment
+
+
+def get_categories(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Category).offset(skip).limit(limit).all()
+
+
+def get_category_by_id(db: Session, category_id: int):
+    return db.query(models.Category).filter(models.Category.id == category_id).first()
+
+
+def create_category(db: Session, category: schemas.CategoryCreate):
+    db_category = models.Category(**category.dict())
+    db.add(db_category)
+    db.commit()
+    db.refresh(db_category)
+    return db_category
+
+
+def get_category_by_name(db: Session, name: str):
+    return db.query(models.Category).filter(models.Category.name == name).first()
+
+
+def add_blog_category(db: Session, blog_id: int, category_id: int):
+    db_blog_category = models.BlogCategory(
+        blog_id=blog_id, category_id=category_id)
+    db.add(db_blog_category)
+    db.commit()
+    db.refresh(db_blog_category)
+    return db_blog_category
+
+
+def check_blog_category(db: Session, blog_id: int, category_id: int):
+    return db.query(models.BlogCategory).filter(models.BlogCategory.blog_id == blog_id).filter(models.BlogCategory.category_id == category_id).first()
+
+
+def delete_blog_category(db: Session, blog_id: int, category_id: int):
+    db_blog_category = db.query(models.BlogCategory).filter(models.BlogCategory.blog_id == blog_id).filter(
+        models.BlogCategory.category_id == category_id).first()
+    db.delete(db_blog_category)
+    db.commit()
+    return db_blog_category
+
+
+def get_categories_by_blog_id(db: Session, blog_id: int):
+    return db.query(models.Category).join(models.BlogCategory, models.Category.id == models.BlogCategory.category_id).filter(models.BlogCategory.blog_id == blog_id).all()
