@@ -30,8 +30,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 router = APIRouter()
 
 
-def authenticate_user(fake_db, username: str, password: str):
-    user = get_user_by_username(fake_db, username)
+def authenticate_user(db, username: str, password: str):
+    user = get_user_by_username(db, username)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
