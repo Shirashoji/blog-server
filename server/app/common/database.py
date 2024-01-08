@@ -1,10 +1,23 @@
 from sqlalchemy import create_engine
+import os
+from os.path import join, dirname
+from dotenv import load_dotenv
+
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db"
-# SQLALCHEMY_DATABASE_URL = "postgresql://postgres:password@0.0.0.0:5432/blog"
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:password@blog-db:5432/blog"
+load_dotenv(verbose=True)
+
+dotenv_path = join(dirname(__file__), '../.env')
+load_dotenv(dotenv_path)
+
+POSTGRES_USER = os.environ.get("POSTGRES_USER")
+POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
+POSTGRES_DB = os.environ.get("POSTGRES_DB")
+
+SQLALCHEMY_DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@blog-db:5432/{POSTGRES_DB}"
+
+print(SQLALCHEMY_DATABASE_URL)
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={}
