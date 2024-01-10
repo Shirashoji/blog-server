@@ -14,7 +14,7 @@ Dockerを用いて簡単に起動することのできる，ブログサーバ�
   ```shell
   docker-compose up
   ```
-  際ビルドする際は以下
+  再ビルドする際は以下
   ```shell
   docker-compose up --build
   ```
