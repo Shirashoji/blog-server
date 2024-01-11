@@ -1,5 +1,5 @@
 from datetime import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class CommentBase(BaseModel):
@@ -7,33 +7,33 @@ class CommentBase(BaseModel):
 
 
 class CommentCreate(CommentBase):
-    content: str
+    content: str = Field(..., example="とても素晴らしいブログでした．面白かったです！！")
 
 
 class Comment(CommentBase):
-    id: int
-    content: str
-    blog_id: int
-    user_id: int
-    created_at: datetime | None = None
-    updated_at: datetime | None = None
+    id: int = Field(..., example=1)
+    content: str = Field(..., example="とても素晴らしいブログでした．面白かったです！！")
+    blog_id: int = Field(..., example=1)
+    user_id: int = Field(..., example=1)
+    created_at: datetime = Field(..., example="2021-01-01T00:00:00.000000")
+    updated_at: datetime = Field(..., example="2021-01-01T00:00:00.000000")
 
     class Config:
         orm_mode = True
 
 
 class CommentSummary(CommentBase):
-    id: int
-    user_id: int
-    content: str
-    updated_at: datetime | None = None
+    id: int = Field(..., example=1)
+    user_id: int = Field(..., example=1)
+    content: str = Field(..., example="とても素晴らしいブログでした．面白かったです！！")
+    updated_at: datetime = Field(..., example="2021-01-01T00:00:00.000000")
 
     class Config:
         orm_mode = True
 
 
 class CategoryBase(BaseModel):
-    name: str
+    name: str = Field(..., example="Python")
 
 
 class CategoryCreate(CategoryBase):
@@ -41,7 +41,7 @@ class CategoryCreate(CategoryBase):
 
 
 class Category(CategoryBase):
-    id: int
+    id: int = Field(..., example=1)
 
     class Config:
         orm_mode = True
@@ -52,30 +52,31 @@ class BlogCategoryBase(BaseModel):
 
 
 class BlogCategory(BlogCategoryBase):
-    blog_id: int
-    category_id: int
+    blog_id: int = Field(..., example=1)
+    category_id: int = Field(..., example=1)
 
     class Config:
         orm_mode = True
 
 
 class BlogBase(BaseModel):
-    title: str
-    description: str | None = None
+    title: str = Field(..., example="Pythonの基礎")
+    description: str = Field(..., example="Pythonの基礎を説明しています！")
 
 
 class BlogCreate(BlogBase):
-    content: str | None = None
+    content: str = Field(
+        ..., example="#Pythonってなに？  Pythonとは，テレビ番組の「モンティ・パイソン」に由来するプログラミング言語です．開発者は，Guido van Rossum氏です．")
     pass
 
 
 class Blog(BlogBase):
-    id: int
-    owner_id: int
-    content: str | None = None
-    created_at: datetime | None = None
-    updated_at: datetime | None = None
-    categories: list[Category] = []
+    id: int = Field(..., example=1)
+    owner_id: int = Field(..., example=1)
+    content: str = Field(
+        ..., example="#Pythonってなに？  Pythonとは，テレビ番組の「モンティ・パイソン」に由来するプログラミング言語です．開発者は，Guido van Rossum氏です．")
+    created_at: datetime = Field(..., example="2021-01-01T00:00:00.000000")
+    updated_at: datetime = Field(..., example="2021-01-01T00:00:00.000000")
     comments: list[CommentSummary] = []
 
     class Config:
