@@ -1,6 +1,18 @@
 version: "2"
 services:
-
+  app:
+    container_name: blog-app
+    build: front/
+    ports:
+      - "3000:3000"
+    restart: always
+    volumes:
+      - ./front/app:/code/app
+      - .env:/code/app/.env
+    command: sh -c "npm run dev"
+    working_dir: /code/app
+    environment:
+      TZ: "Asia/Tokyo"
   server:
     container_name: blog-server
     build: server/
