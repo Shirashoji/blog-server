@@ -1,10 +1,11 @@
 version: "2"
 services:
-  app:
-    container_name: blog-app
+
+  server:
+    container_name: blog-server
     build: server/
     ports:
-      - "80:80"
+      - "8000:8000"
     depends_on:
       postgres:
         condition: service_healthy
