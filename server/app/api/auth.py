@@ -1,23 +1,27 @@
 from datetime import datetime, timedelta
-from typing import Annotated
-
+from dotenv import load_dotenv
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-
 from jose import JWTError, jwt
-
+from os.path import join, dirname
 from sqlalchemy.orm import Session
+from typing import Annotated
+import os
 
 from api.dps import get_db
-
 from common.crud import get_user_by_username
 from common.schemas import TokenData, Token, User
 from common.security import verify_password
 
-# to get a string like this run:
-# openssl rand -hex 32
-SECRET_KEY = "b3576b97f306c895336cc700fd612aa2a4bb65d2df441738e2b7258a1a00fac3"
-ALGORITHM = "HS256"
+
+load_dotenv(verbose=True)
+
+dotenv_path = join(dirname(__file__), '../.env')
+load_dotenv(dotenv_path)
+
+PASSWORD_SECRET_KEY = os.environ.get("PASSWORD_SECRET_KEY")
+HASH_ALGORITHM = os.environ.get("HASH_ALGORITHM")
+
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
@@ -26,8 +30,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 router = APIRouter()
 
 
-def authenticate_user(fake_db, username: str, password: str):
-    user = get_user_by_username(fake_db, username)
+def authenticate_user(db, username: str, password: str):
+    user = get_user_by_username(db, username)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
@@ -42,7 +46,8 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     else:
         expire = datetime.utcnow() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(
+        to_encode, PASSWORD_SECRET_KEY, algorithm=HASH_ALGORITHM)
     return encoded_jwt
 
 
@@ -72,7 +77,8 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: Se
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, PASSWORD_SECRET_KEY,
+                             algorithms=[HASH_ALGORITHM])
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception

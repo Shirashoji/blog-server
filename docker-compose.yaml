@@ -1,36 +1,47 @@
 version: "2"
 services:
   app:
-    container_name: blog-app
-    build: .
+    container_name: ${APPLICATION_HOST}
+    build: front/
     ports:
-      - "80:80"
-      - "8080:8080"
+      - "${APPLICATION_PORT}:${APPLICATION_PORT}"
+    restart: always
+    volumes:
+      - ./front/app:/app
+      - .env:/app/.env
+    command: sh -c "npm run dev"
+    working_dir: /app/
+    environment:
+      TZ: "Asia/Tokyo"
+  server:
+    container_name: ${SERVER_HOST}
+    build: server/
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
     depends_on:
       postgres:
         condition: service_healthy
     restart: always
     volumes:
-      - ./app:/code/app
+      - ./server/app:/code/app
+      - .env:/code/app/.env
+    working_dir: /code/app
     environment:
       TZ: "Asia/Tokyo"
   postgres:
     image: postgres:12.11
-    container_name: blog-db
+    container_name: ${POSTGRES_HOST}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: blog
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
     volumes:
-      - ./postgres_data:/var/lib/postgresql/data
-
-volumes:
-  postgres_data:
+      - ./data/postgres_data:/var/lib/postgresql/data
